@@ -1,0 +1,23 @@
+{
+  "name": "gridfw-compiler",
+  "version": "1.0.0",
+  "description": "gridfw compiler",
+  "main": "build/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gridfw/compiler.git"
+  },
+  "keywords": [
+    "gridfw",
+    "compiler"
+  ],
+  "author": "coredigix",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gridfw/compiler/issues"
+  },
+  "homepage": "https://github.com/gridfw/compiler#readme"
+}
