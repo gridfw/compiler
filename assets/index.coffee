@@ -15,6 +15,7 @@ exports.settings = gfwSettings
 # TEMPLATE
 exports.template = (data)->
 	data ?= {}
-	data.gfwSettings = gfwSettings
+	data.settings = gfwSettings
 	data.initSettings = initSettings
+	data.DEFAULT_ENCODING = 'utf8'
 	return Template data
