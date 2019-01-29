@@ -66,7 +66,7 @@ for v, k in GFW_SETTINGS_ARR
 gfwSettings = _create null,
 	count: value: GFW_SETTINGS_ARR.length
 for v, k in GFW_SETTINGS_ARR
-	settings[v] = k
+	gfwSettings[v] = k
 ###*
  * set checkers and default values
  * @example
@@ -77,7 +77,7 @@ for v, k in GFW_SETTINGS_ARR
 ###
 initSettings = """
 ((settings)->
-	mapper = #{JSON.serialize gfwSettings}
+	mapper = #{JSON.stringify gfwSettings}
 	# check settings
 	for k,v of settings
 		throw new Error "Key required: \#{k}" unless k of mapper
