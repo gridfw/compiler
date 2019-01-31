@@ -31,6 +31,8 @@
   },
   "homepage": "https://github.com/gridfw/compiler#readme",
   "dependencies": {
-    "gulp-template": "^5.0.0"
+    "ejs": "^2.6.1",
+    "gulp-template": "^5.0.0",
+    "pug": "^2.0.3"
   }
 }

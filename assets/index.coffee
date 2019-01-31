@@ -1,5 +1,11 @@
-cliTable		= require 'cli-table'
-Template		= require 'gulp-template' # compile some consts into digits
+cliTable	= require 'cli-table'
+Template	= require 'gulp-template' # compile some consts into digits
+
+# view engines
+Pug= require 'pug'
+# GULP
+Through2	= require 'through2'
+Path		= require 'path'
 
 #=include _utils.coffee
 
@@ -19,3 +25,11 @@ exports.template = (data)->
 	data.initSettings = initSettings
 	data.DEFAULT_ENCODING = 'utf8'
 	return Template data
+
+###*
+ * compile views
+ * @optional @param  {Object} settings.engines - map of used engines
+###
+#=include _views.coffee
+exports.views = _compileViews
+
