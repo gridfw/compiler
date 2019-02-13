@@ -1,7 +1,12 @@
 # gridfw-compiler
 Compile sources files for gridfw
 
-
+# Compile js templates
+```javascript
+// use default options
+gulp.src(...)
+    .pipe( GfwCompiler.template({params}) )
+```
 
 # Compile views
 
@@ -41,3 +46,6 @@ compiler.views({
     }
 })
 ```
+
+## Supporters
+[![coredigix](https://www.coredigix.com/img/logo.png)](https://coredigix.com)
