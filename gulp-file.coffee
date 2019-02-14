@@ -9,8 +9,8 @@ coffeescript	= require 'gulp-coffeescript'
 GfwCompiler		= require '../compiler'
 
 #=include assets/_error-handler.coffee
-settings=
-	isProd: gutil.env.mode is 'prod'
+settings = 
+	isProd: gutil.env.hasOwnProperty('prod')
 # compile final values (consts to be remplaced at compile time)
 # handlers
 compileCoffee = ->

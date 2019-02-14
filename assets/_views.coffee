@@ -10,6 +10,7 @@ _DEFAULT_VIEW_SETTINGS =
 			content = Pug.compileClient content,
 				pretty: options.pretty
 				filename: options.filename
+				debug: options.debug
 			# add exports
 			content + "\nmodule.exports=template"
 		# EJS

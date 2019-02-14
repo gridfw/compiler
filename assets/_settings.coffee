@@ -103,7 +103,12 @@ initSettings = """
 		s = app.s
 		# set default values
 		for k,v of settings
-			s[v.i] = v.default
+			df = v.default
+			if typeof df is 'object'
+				df = Object.assign {}, df if df
+			else if typeof df is 'function'
+				df = df(app)
+			s[v.i] = df
 		# set options
 		unless options
 		else if typeof options is 'object'
