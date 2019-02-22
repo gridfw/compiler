@@ -6,6 +6,7 @@ Pug= require 'pug'
 # GULP
 Through2	= require 'through2'
 Path		= require 'path'
+Terser	= require 'terser'
 
 #=include _utils.coffee
 
@@ -31,5 +32,10 @@ exports.template = (data)->
  * @optional @param  {Object} settings.engines - map of used engines
 ###
 #=include _views.coffee
-exports.views = _compileViews
+exports.views= _compileViews
 
+###*
+ * Compile i18n files
+###
+#=include _i18n-compile.coffee
+exports.i18n= i18nCompile
