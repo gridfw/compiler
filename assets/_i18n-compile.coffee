@@ -141,8 +141,50 @@ _i18nCompileModules=
 		# compile
 		return fx.join ''
 
+###*
+ * Convert i18n to JS files
+###
+_convertDataToJSONFiles=(data, cwd)->
+	# separate into multiple locals
+	for k,v of data
+		new gutil.File
+			cwd: cwd
+			path: k + '.json'
+			contents: new Buffer JSON.stringify v
 
-
+_convertDataToJSFiles= (data, cwd)->
+	# separate into multiple locals
+	for k,v of data
+		content = []
+		for a,b of v
+			content.push "#{JSON.stringify a}:#{(i18n.compile b).toString()}"
+		# create table for fast access
+		content = """
+		var msgs= exports.messages= {#{content.join ','}};
+		var arr= exports.arr= [];
+		var map= exports.map= Object.create(null);
+		var i=0, k;
+		for(k in msgs){ arr.push(msgs[k]); map[k] = i++; }
+		"""
+		# create file
+		new gutil.File
+			cwd: cwd
+			path: k + '.js'
+			contents: new Buffer content
+# convert inside views
+_convertToViews= (data, viewsPath)->
+	# resolve views
+	LTemptate = Lodash.template
+	for filePath in Glob.sync viewsPath, nodir:on
+		# load file data
+		content = fs.readFileSync filePath, encoding: 'utf8'
+		tpl= LTemptate content # template
+		# translate
+		for k,v of data
+			new gutil.File
+				cwd: Path.direname filePath
+				path: k + Path.basename filePath
+				contents: new Buffer tpl i18n: v
 
 ###*
  * Compile i18n files
@@ -162,7 +204,6 @@ i18nCompile = (options)->
 		# process
 		err = null
 		try
-			console.log '--- file: ', file
 			# compile file and buffer data
 			Object.assign bufferedI18n, eval file.contents.toString 'utf8'
 			# base dir
@@ -170,6 +211,7 @@ i18nCompile = (options)->
 		catch e
 			err = new gutil.PluginError plugName, e
 		cb err
+		return
 	# concat all files
 	concatAll = (cb)->
 		err= null
@@ -178,37 +220,25 @@ i18nCompile = (options)->
 			unless _isEmpty bufferedI18n
 				# normalize 18n: convert into separated locals
 				data = _normalize bufferedI18n
-				# separate into multiple locals
+				# reserved attributes
 				for k,v of data
-					# reserved attributes
 					v.local = k
-					# compile to JSON
-					if toJson
-						fle = new gutil.File
-							cwd: cwd
-							path: k + '.json'
-							contents: new Buffer JSON.stringify v
-					# compile js instead
-					else
-						content = []
-						for a,b of v
-							content.push "#{JSON.stringify a}:#{(i18n.compile b).toString()}"
-						# create table for fast access
-						content = """
-						var msgs= exports.messages= {#{content.join ','}};
-						var arr= exports.arr= [];
-						var map= exports.map= Object.create(null);
-						var i=0, k;
-						for(k in msgs){ arr.push(msgs[k]); map[k] = i++; }
-						"""
-						# create file
-						fle = new gutil.File
-							cwd: cwd
-							path: k + '.js'
-							contents: new Buffer content
-					@push fle
+				# replace inside views
+				if 'views' of options
+					files= _convertToViews data, options.views
+				# compile to json files
+				else if toJson
+					files= _convertDataToJSONFiles data, cwd
+				# compile to JS files
+				else
+					files= _convertDataToJSFiles data, cwd
+
+				# push files
+				for file in files
+					@push file
 		catch e
 			err = new gutil.PluginError plugName, e
 		cb err
+		return
 	# return
 	through.obj bufferContents, concatAll

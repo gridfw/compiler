@@ -12,7 +12,7 @@ _DEFAULT_VIEW_SETTINGS =
 				filename: options.filename
 				debug: options.debug
 			# add exports
-			content + "\nmodule.exports=template"
+			content + "\nmodule.exports= template"
 		# EJS
 		ejs: (content, options)->
 			# compile content
@@ -21,7 +21,7 @@ _DEFAULT_VIEW_SETTINGS =
 				filename: options.filename
 				client: true # render client function
 			# export data
-			"module.exports =" + content.toString()
+			"module.exports=" + content.toString()
 
 _compileViews = (settings)->
 	# init settings
@@ -44,15 +44,25 @@ _compileViews = (settings)->
 			throw new Error "Compile-views>> Unsupported file: #{file.path}" unless engine
 			# compile
 			content = file.contents.toString 'utf8'
+			# render
 			content = engine content,
 				pretty: pretty
 				filename: filePath
-			# save
-			file.contents = new Buffer content, 'utf8'
 			# file ext
 			i = filePath.lastIndexOf '.'
 			throw new Error 'Could not found "."' if i is -1
-			file.path = filePath.substr(0, i) + '.js'
+			filePath = filePath.substr(0, i)
+			# when render as html
+			if 'data' of settings
+				content = do ->
+					eval content.replace(/\bmodule.exports\b/, 'var template')
+					return template settings.data
+				filePath += '.htm'
+			else
+				filePath += '.js'
+			# save
+			file.contents = new Buffer content, 'utf8'
+			file.path= filePath
 		catch e
 			err = e
 		cb err, file

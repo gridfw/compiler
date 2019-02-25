@@ -7,6 +7,9 @@ Pug= require 'pug'
 Through2	= require 'through2'
 Path		= require 'path'
 Terser	= require 'terser'
+Glob = require 'glob'
+Fs= require 'fs'
+Lodash = require 'lodash'
 
 #=include _utils.coffee
 
