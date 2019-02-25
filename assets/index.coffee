@@ -8,6 +8,7 @@ Through2	= require 'through2'
 Path		= require 'path'
 Terser	= require 'terser'
 Glob = require 'glob'
+GlobBase= require 'glob-base'
 Fs= require 'fs'
 Lodash = require 'lodash'
 

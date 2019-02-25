@@ -172,17 +172,20 @@ _convertDataToJSFiles= (data, cwd)->
 			path: k + '.js'
 			contents: new Buffer content
 # convert inside views
-_convertToViews= (data, viewsPath)->
+_convertToViews= (data, viewsPath, cwd)->
+	globbasePath= GlobBase viewsPath
 	# resolve views
 	LTemptate = Lodash.template
 	for filePath in Glob.sync viewsPath, nodir:on
 		# load file data
 		content = fs.readFileSync filePath, encoding: 'utf8'
 		tpl= LTemptate content # template
+		# file relative path
+		fileRelPath = (Path.direname filePath).replace(globbasePath, '')
 		# translate
 		for k,v of data
 			new gutil.File
-				cwd: Path.direname filePath
+				cwd: Path.join cwd, fileRelPath
 				path: k + Path.basename filePath
 				contents: new Buffer tpl i18n: v
 
