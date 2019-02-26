@@ -147,7 +147,7 @@ _i18nCompileModules=
 _convertDataToJSONFiles=(data, cwd)->
 	# separate into multiple locals
 	for k,v of data
-		new gutil.File
+		new Vinyl
 			cwd: cwd
 			path: k + '.json'
 			contents: new Buffer JSON.stringify v
@@ -167,27 +167,30 @@ _convertDataToJSFiles= (data, cwd)->
 		for(k in msgs){ arr.push(msgs[k]); map[k] = i++; }
 		"""
 		# create file
-		new gutil.File
+		new Vinyl
 			cwd: cwd
 			path: k + '.js'
 			contents: new Buffer content
 # convert inside views
-_convertToViews= (data, viewsPath, cwd)->
-	globbasePath= GlobBase viewsPath
+_convertToViews= (data, options, cwd)->
+	globbasePath= GlobBase(options.views).base
+	opData= options.data || {}
 	# resolve views
 	LTemptate = Lodash.template
-	for filePath in Glob.sync viewsPath, nodir:on
+	results = []
+	for filePath in Glob.sync options.views, nodir:on
 		# load file data
-		content = fs.readFileSync filePath, encoding: 'utf8'
+		content = Fs.readFileSync filePath, encoding: 'utf8'
 		tpl= LTemptate content # template
 		# file relative path
-		fileRelPath = (Path.direname filePath).replace(globbasePath, '')
+		fileRelPath = (Path.dirname filePath).replace(globbasePath, '')
 		# translate
 		for k,v of data
-			new gutil.File
-				cwd: Path.join cwd, fileRelPath
-				path: k + Path.basename filePath
-				contents: new Buffer tpl i18n: v
+			results.push new Vinyl
+				cwd: cwd
+				path: Path.join k, fileRelPath, Path.basename filePath
+				contents: new Buffer tpl {i18n: v , ...opData, baseURL: opData.baseURL.concat(k, '/')}
+	results
 
 ###*
  * Compile i18n files
@@ -212,7 +215,7 @@ i18nCompile = (options)->
 			# base dir
 			cwd= file._cwd
 		catch e
-			err = new gutil.PluginError plugName, e
+			err = new PluginError plugName, e
 		cb err
 		return
 	# concat all files
@@ -228,20 +231,20 @@ i18nCompile = (options)->
 					v.local = k
 				# replace inside views
 				if 'views' of options
-					files= _convertToViews data, options.views
+					files= _convertToViews data, options, cwd
 				# compile to json files
 				else if toJson
 					files= _convertDataToJSONFiles data, cwd
 				# compile to JS files
 				else
 					files= _convertDataToJSFiles data, cwd
-
 				# push files
 				for file in files
 					@push file
 		catch e
-			err = new gutil.PluginError plugName, e
+			console.log '-- got error: ', e
+			err = new PluginError plugName, e
 		cb err
 		return
 	# return
-	through.obj bufferContents, concatAll
+	Through2.obj bufferContents, concatAll

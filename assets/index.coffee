@@ -11,6 +11,10 @@ Glob = require 'glob'
 GlobBase= require 'glob-base'
 Fs= require 'fs'
 Lodash = require 'lodash'
+Vinyl = require 'vinyl'
+PluginError= require 'plugin-error'
+
+plugName= 'gridfw-compiler'
 
 #=include _utils.coffee
 
