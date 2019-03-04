@@ -11,6 +11,7 @@ _DEFAULT_VIEW_SETTINGS =
 				pretty: options.pretty
 				filename: options.filename
 				debug: options.debug
+				filters: options.filters
 			# add exports
 			content + "\nmodule.exports= template"
 		# EJS
@@ -48,6 +49,7 @@ _compileViews = (settings)->
 			content = engine content,
 				pretty: pretty
 				filename: filePath
+				filters: settings.filters
 			# file ext
 			i = filePath.lastIndexOf '.'
 			throw new Error 'Could not found "."' if i is -1
