@@ -47,3 +47,7 @@ exports.views= _compileViews
 ###
 #=include _i18n-compile.coffee
 exports.i18n= i18nCompile
+
+# wait for gulp.dest to finish
+#=include _wait-for-all.coffee
+exports.waitForAll= _waitForAll
