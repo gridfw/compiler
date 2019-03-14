@@ -242,7 +242,6 @@ i18nCompile = (options)->
 				for file in files
 					@push file
 		catch e
-			console.log '-- got error: ', e
 			err = new PluginError plugName, e
 		cb err
 		return
