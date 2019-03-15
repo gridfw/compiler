@@ -152,20 +152,24 @@ _convertDataToJSONFiles=(data, cwd)->
 			path: k + '.json'
 			contents: new Buffer JSON.stringify v
 
-_convertDataToJSFiles= (data, cwd)->
+_convertDataToJSFiles= (data, cwd, browserFx)->
 	# separate into multiple locals
 	for k,v of data
 		content = []
 		for a,b of v
 			content.push "#{JSON.stringify a}:#{(i18n.compile b).toString()}"
 		# create table for fast access
-		content = """
-		var msgs= exports.messages= {#{content.join ','}};
-		var arr= exports.arr= [];
-		var map= exports.map= Object.create(null);
-		var i=0, k;
-		for(k in msgs){ arr.push(msgs[k]); map[k] = i++; }
-		"""
+		if browserFx
+			content = "const #{browserFx}= {#{content.join ','}};"
+		else
+			content = "exports.messages= {#{content.join ','}};"
+		# content = """
+		# var msgs= exports.messages= {#{content.join ','}};
+		# var arr= exports.arr= [];
+		# var map= exports.map= Object.create(null);
+		# var i=0, k;
+		# for(k in msgs){ arr.push(msgs[k]); map[k] = i++; }
+		# """
 		# create file
 		new Vinyl
 			cwd: cwd
@@ -201,6 +205,7 @@ i18nCompile = (options)->
 	# options
 	options ?= _create null
 	toJson = options.json is true
+	browserFx= options.browser or false
 	cwd  = null
 	# compile each file
 	bufferContents = (file, end, cb)->
@@ -237,7 +242,7 @@ i18nCompile = (options)->
 					files= _convertDataToJSONFiles data, cwd
 				# compile to JS files
 				else
-					files= _convertDataToJSFiles data, cwd
+					files= _convertDataToJSFiles data, cwd, browserFx
 				# push files
 				for file in files
 					@push file

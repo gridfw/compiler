@@ -12,7 +12,7 @@ GFW_SETTINGS_ARR = [
 	###*
 	 * GRIDFW CORE
 	###
-	'mode' # app mode
+	'isProd' # app mode
 	'name' # app name
 	'author' # the app author
 	'email' # the app admin or webmaster email
@@ -83,8 +83,8 @@ Object.setPrototypeOf gfwSettings, new Proxy {},
  * set checkers and default values
  * @example
  * settingsInit = <%= initSettings %>
- * 		mode:
- * 			default: 'dev'
+ * 		isProd:
+ * 			default: false
  * 			check: (value) -> value
 ###
 initSettings = """
