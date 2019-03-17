@@ -162,7 +162,7 @@ _convertDataToJSFiles= (data, cwd, browserFx)->
 		if browserFx
 			content = "const #{browserFx}= {#{content.join ','}};"
 		else
-			content = "exports.messages= {#{content.join ','}};"
+			content = "module.exports= {#{content.join ','}};"
 		# content = """
 		# var msgs= exports.messages= {#{content.join ','}};
 		# var arr= exports.arr= [];
@@ -193,7 +193,7 @@ _convertToViews= (data, options, cwd)->
 			results.push new Vinyl
 				cwd: cwd
 				path: Path.join k, fileRelPath, Path.basename filePath
-				contents: new Buffer tpl {i18n: v , ...opData, baseURL: opData.baseURL.concat(k, '/')}
+				contents: new Buffer tpl {i18n: v , ...opData, htmlBaseURL: opData.baseURL.concat(k, '/')}
 	results
 
 ###*
