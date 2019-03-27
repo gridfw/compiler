@@ -36,7 +36,8 @@ GFW_SETTINGS_ARR = [
 	# reserved for future use
 	'jsCacheMaxSize'
 	'jsCacheMaxSteps'
-	'_core2'
+	# use custom settings
+	'settings'
 	'_core3'
 	'_core4'
 	'_core5'
