@@ -160,7 +160,7 @@ _convertDataToJSFiles= (data, cwd, browserFx)->
 			content.push "#{JSON.stringify a}:#{(i18n.compile b).toString()}"
 		# create table for fast access
 		if browserFx
-			content = "const #{browserFx}= {#{content.join ','}};"
+			content = "#{browserFx}= {#{content.join ','}};"
 		else
 			content = "module.exports= {#{content.join ','}};"
 		# content = """

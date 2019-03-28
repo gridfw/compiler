@@ -10,7 +10,7 @@ _DEFAULT_VIEW_SETTINGS =
 			content = Pug.compileClient content,
 				pretty: options.pretty
 				filename: options.filename
-				debug: options.debug
+				compileDebug: options.debug
 				filters: options.filters
 			# add exports
 			content + "\nmodule.exports= template"
@@ -33,6 +33,7 @@ _compileViews = (settings)->
 		settings = _DEFAULT_VIEW_SETTINGS
 	engines = settings.engines
 	pretty = settings.pretty or false
+	debug= settings.debug
 	# return compile function
 	return Through2.obj (file, enc, cb)->
 		err = null
@@ -48,6 +49,7 @@ _compileViews = (settings)->
 			# render
 			content = engine content,
 				pretty: pretty
+				debug: debug
 				filename: filePath
 				filters: settings.filters
 			# file ext
