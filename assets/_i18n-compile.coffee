@@ -150,7 +150,7 @@ _convertDataToJSONFiles=(data, cwd)->
 		new Vinyl
 			cwd: cwd
 			path: k + '.json'
-			contents: new Buffer JSON.stringify v
+			contents: Buffer.from JSON.stringify v
 
 _convertDataToJSFiles= (data, cwd, browserFx)->
 	# separate into multiple locals
@@ -174,7 +174,7 @@ _convertDataToJSFiles= (data, cwd, browserFx)->
 		new Vinyl
 			cwd: cwd
 			path: k + '.js'
-			contents: new Buffer content
+			contents: Buffer.from content
 # convert inside views
 _convertToViews= (data, options, cwd)->
 	globbasePath= GlobBase(options.views).base
@@ -193,7 +193,7 @@ _convertToViews= (data, options, cwd)->
 			results.push new Vinyl
 				cwd: cwd
 				path: Path.join k, fileRelPath, Path.basename filePath
-				contents: new Buffer tpl {i18n: v , ...opData, htmlBaseURL: opData.baseURL.concat(k, '/')}
+				contents: Buffer.from tpl {i18n: v , ...opData, htmlBaseURL: opData.baseURL.concat(k, '/')}
 	results
 
 ###*

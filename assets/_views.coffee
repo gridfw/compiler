@@ -65,7 +65,7 @@ _compileViews = (settings)->
 			else
 				filePath += '.js'
 			# save
-			file.contents = new Buffer content, 'utf8'
+			file.contents = Buffer.from content, 'utf8'
 			file.path= filePath
 		catch e
 			err = e
