@@ -187,12 +187,12 @@ _convertToViews= (data, options, cwd)->
 		content = Fs.readFileSync filePath, encoding: 'utf8'
 		tpl= LTemptate content # template
 		# file relative path
-		fileRelPath = (Path.dirname filePath).replace(globbasePath, '')
+		fileRelPath= Path.relative globbasePath, filePath
 		# translate
 		for k,v of data
 			results.push new Vinyl
 				cwd: cwd
-				path: Path.join k, fileRelPath, Path.basename filePath
+				path: Path.join globbasePath, k, fileRelPath #, Path.basename filePath
 				contents: Buffer.from tpl {i18n: v , ...opData, htmlBaseURL: opData.baseURL.concat(k, '/')}
 	results
 
@@ -227,6 +227,8 @@ i18nCompile = (options)->
 	concatAll = (cb)->
 		err= null
 		try
+			# base path
+			cwd= options.base or cwd
 			# check file not empty
 			unless _isEmpty bufferedI18n
 				# normalize 18n: convert into separated locals
