@@ -12,6 +12,7 @@ _DEFAULT_VIEW_SETTINGS =
 				filename: options.filename
 				compileDebug: options.debug
 				filters: options.filters
+				globals: options.globals
 			# add exports
 			content + "\nmodule.exports= template"
 		# EJS
@@ -52,6 +53,7 @@ _compileViews = (settings)->
 				debug: debug
 				filename: filePath
 				filters: settings.filters
+				globals: settings.globals
 			# file ext
 			i = filePath.lastIndexOf '.'
 			throw new Error 'Could not found "."' if i is -1
