@@ -177,7 +177,7 @@ _convertDataToJSFiles= (data, cwd, browserFx)->
 			contents: Buffer.from content
 # convert inside views
 _convertToViews= (data, options, cwd)->
-	globbasePath= GlobBase(options.views).base
+	globbasePath= options.base or GlobBase(options.views).base
 	opData= options.data || {}
 	# resolve views
 	LTemptate = Lodash.template
@@ -191,7 +191,7 @@ _convertToViews= (data, options, cwd)->
 		# translate
 		for k,v of data
 			results.push new Vinyl
-				cwd: cwd
+				cwd: globbasePath
 				path: Path.join globbasePath, k, fileRelPath #, Path.basename filePath
 				contents: Buffer.from tpl {i18n: v , ...opData, htmlBaseURL: opData.baseURL.concat(k, '/')}
 	results
