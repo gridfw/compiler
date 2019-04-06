@@ -226,6 +226,7 @@ i18nCompile = (options)->
 	# concat all files
 	concatAll = (cb)->
 		err= null
+		languages= []
 		try
 			# base path
 			cwd= options.base or cwd
@@ -236,15 +237,33 @@ i18nCompile = (options)->
 				# reserved attributes
 				for k,v of data
 					v.local = k
+					if v.lang
+						languages.push
+							local: k
+							title: v.lang
+				# sort languages
+				languages= languages.sort (a, b)-> a.local.localeCompare b.local
 				# replace inside views
 				if 'views' of options
 					files= _convertToViews data, options, cwd
 				# compile to json files
 				else if toJson
 					files= _convertDataToJSONFiles data, cwd
+					# add mapper file
+					if languages.length
+						files.push new Vinyl
+							cwd: cwd
+							path: 'mapper.json'
+							contents: Buffer.from JSON.stringify locals: languages
 				# compile to JS files
 				else
 					files= _convertDataToJSFiles data, cwd, browserFx
+					# add mapper file
+					if languages.length
+						files.push new Vinyl
+							cwd: cwd
+							path: 'mapper.js'
+							contents: Buffer.from 'module.exports=' + JSON.stringify locals: languages
 				# push files
 				for file in files
 					@push file
