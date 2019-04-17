@@ -90,7 +90,7 @@ _compileStr = (expr)->
 	expr = '|' + expr.replace /\n/g, "\n|"
 	if /[#!]\{/.test expr
 		expr = Pug.compileClient expr,
-			self:on
+			# self:on
 			compileDebug: off
 			globals: ['i18n']
 			inlineRuntimeFunctions: false
