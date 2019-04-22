@@ -69,15 +69,15 @@ i18n =
 	###*
 	 * Compile expression (module or pug)
 	###
-	compile: (expr)->
-		throw new Error 'Illegal arguments' if arguments.length isnt 1
+	compile: (expr, options)->
+		throw new Error 'Illegal arguments' if arguments.length isnt 2
 		if typeof expr is 'object'
 			throw new Error "Illegal module" unless typeof expr.m is 'string'
 			fx= _i18nCompileModules[expr.m]
 			throw new Error "Unknown module: #{expr.m}" unless fx
 			expr = fx expr
 		else if typeof expr is 'string'
-			expr = _compileStr expr
+			expr = _compileStr expr, options
 		else 
 			throw new Error "Unsupported expression"
 		return expr
@@ -86,13 +86,20 @@ i18n =
  * Compile strings
  * @return {String | function} - compiled string or function compiler (case of arguments)
 ###
-_compileStr = (expr)->
+_compileStr = (expr, options)->
 	expr = '|' + expr.replace /\n/g, "\n|"
 	if /[#!]\{/.test expr
+		# globals
+		if options and options.globals
+			globals= Array.from options.globals
+			globals.push 'i18n'
+		else
+			globals= ['i18n']
+		# compile
 		expr = Pug.compileClient expr,
 			# self:on
 			compileDebug: off
-			globals: ['i18n']
+			globals: globals
 			inlineRuntimeFunctions: false
 			name: 'ts'
 		# uglify and remove unused vars
@@ -153,12 +160,12 @@ _convertDataToJSONFiles=(data, cwd)->
 			path: k + '.json'
 			contents: Buffer.from JSON.stringify v
 
-_convertDataToJSFiles= (data, cwd, browserFx)->
+_convertDataToJSFiles= (data, cwd, browserFx, options)->
 	# separate into multiple locals
 	for k,v of data
 		content = []
 		for a,b of v
-			content.push "#{JSON.stringify a}:#{(i18n.compile b).toString()}"
+			content.push "#{JSON.stringify a}:#{(i18n.compile b, options).toString()}"
 		# create table for fast access
 		if browserFx
 			content = "#{browserFx}= {#{content.join ','}};"
@@ -260,7 +267,7 @@ i18nCompile = (options)->
 							contents: Buffer.from JSON.stringify locals: languages
 				# compile to JS files
 				else
-					files= _convertDataToJSFiles data, cwd, browserFx
+					files= _convertDataToJSFiles data, cwd, browserFx, options
 					# add mapper file
 					if languages.length
 						files.push new Vinyl
