@@ -72,10 +72,14 @@ i18n =
 	compile: (expr, options)->
 		throw new Error 'Illegal arguments' if arguments.length isnt 2
 		if typeof expr is 'object'
-			throw new Error "Illegal module" unless typeof expr.m is 'string'
-			fx= _i18nCompileModules[expr.m]
-			throw new Error "Unknown module: #{expr.m}" unless fx
-			expr = fx expr
+			if Array.isArray
+				expr= expr.map((v)-> i18n.compile v, options).join(',')
+				expr= "[#{expr}]"
+			else
+				throw new Error "Illegal module" unless typeof expr.m is 'string'
+				fx= _i18nCompileModules[expr.m]
+				throw new Error "Unknown module: #{expr.m}" unless fx
+				expr = fx expr
 		else if typeof expr is 'string'
 			expr = _compileStr expr, options
 		else 
