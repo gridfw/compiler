@@ -6,7 +6,10 @@ uglify			= require('gulp-uglify-es').default
 rename			= require "gulp-rename"
 coffeescript	= require 'gulp-coffeescript'
 
-GfwCompiler		= require '../compiler'
+try
+	GfwCompiler		= require 'gridfw-compiler'
+catch e
+	GfwCompiler		= require '../gridfw/node_modules/gridfw-compiler'
 
 #=include assets/_error-handler.coffee
 settings = 
