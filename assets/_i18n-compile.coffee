@@ -72,7 +72,7 @@ i18n =
 	compile: (expr, options)->
 		throw new Error 'Illegal arguments' if arguments.length isnt 2
 		if typeof expr is 'object'
-			if Array.isArray
+			if Array.isArray expr
 				expr= expr.map((v)-> i18n.compile v, options).join(',')
 				expr= "[#{expr}]"
 			else

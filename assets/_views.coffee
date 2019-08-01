@@ -13,6 +13,7 @@ _DEFAULT_VIEW_SETTINGS =
 				compileDebug: options.debug
 				filters: options.filters
 				globals: options.globals
+				inlineRuntimeFunctions: options.inlineRuntimeFunctions isnt false
 			# add exports
 			content + "\nmodule.exports= template"
 		# EJS
@@ -54,6 +55,7 @@ _compileViews = (settings)->
 				filename: filePath
 				filters: settings.filters
 				globals: settings.globals
+				inlineRuntimeFunctions: settings.inlineRuntimeFunctions
 			# file ext
 			i = filePath.lastIndexOf '.'
 			throw new Error 'Could not found "."' if i is -1
