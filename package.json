@@ -1,6 +1,6 @@
 {
   "name": "gridfw-compiler",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "gridfw compiler",
   "main": "build/index.js",
   "scripts": {

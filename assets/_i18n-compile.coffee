@@ -82,7 +82,7 @@ i18n =
 				expr = fx expr
 		else if typeof expr is 'string'
 			expr = _compileStr expr, options
-		else 
+		else
 			throw new Error "Unsupported expression"
 		return expr
 
@@ -189,6 +189,7 @@ _convertDataToJSFiles= (data, cwd, browserFx, options)->
 			cwd: cwd
 			path: k + '.js'
 			contents: Buffer.from content
+	
 # convert inside views
 _convertToViews= (data, options, cwd)->
 	globbasePath= options.base or GlobBase(options.views).base

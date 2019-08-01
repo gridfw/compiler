@@ -74,3 +74,6 @@ _compileViews = (settings)->
 		catch e
 			err = e
 		cb err, file
+
+# interface
+exports.views= _compileViews

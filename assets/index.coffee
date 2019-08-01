@@ -23,9 +23,12 @@ plugName= 'gridfw-compiler'
 exports.logError = errorHandler
 
 # Settings
-#=include _settings.coffee
-exports.initSettings = initSettings
-exports.settings = gfwSettings
+initSettings= null
+gfwSettings= null
+do ->
+	#=include _settings.coffee
+	exports.initSettings = initSettings
+	exports.settings = gfwSettings
 
 # TEMPLATE
 exports.template = (data)->
@@ -39,15 +42,18 @@ exports.template = (data)->
  * compile views
  * @optional @param  {Object} settings.engines - map of used engines
 ###
-#=include _views.coffee
-exports.views= _compileViews
+do ->
+	#=include _views.coffee
+
 
 ###*
  * Compile i18n files
 ###
-#=include _i18n-compile.coffee
-exports.i18n= i18nCompile
+do ->
+	#=include _i18n-compile.coffee
+	exports.i18n= i18nCompile
 
 # wait for gulp.dest to finish
-#=include _wait-for-all.coffee
-exports.waitForAll= _waitForAll
+do ->
+	#=include _wait-for-all.coffee
+	exports.waitForAll= _waitForAll
